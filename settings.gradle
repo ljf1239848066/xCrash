@@ -1,0 +1,2 @@
+include ':sample', ':libxcrash', ':libxcrash_dumper', ':libxcrash'
+rootProject.name='xCrash'
