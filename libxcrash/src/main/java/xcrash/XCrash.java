@@ -26,6 +26,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
+
+import java.io.File;
+import java.util.Random;
 
 /**
  * xCrash is a crash reporting library for Android APP.
@@ -33,6 +37,7 @@ import android.text.TextUtils;
 @SuppressWarnings("unused")
 public final class XCrash {
 
+    private final static String TAG = "XCrash";
     private static boolean initialized = false;
     private static String appId = null;
     private static String appVersion = null;
@@ -60,7 +65,7 @@ public final class XCrash {
      *
      * <p>Note: This is a synchronous operation.
      *
-     * @param ctx The context of the application object of the current process.
+     * @param ctx    The context of the application object of the current process.
      * @param params An initialization parameter set.
      * @return Return zero if successful, non-zero otherwise. The error code is defined in: {@link Errno}.
      */
@@ -126,13 +131,13 @@ public final class XCrash {
 
         //init file manager
         FileManager.getInstance().initialize(
-            params.logDir,
-            params.javaLogCountMax,
-            params.nativeLogCountMax,
-            params.anrLogCountMax,
-            params.placeholderCountMax,
-            params.placeholderSizeKb,
-            params.logFileMaintainDelayMs);
+                params.logDir,
+                params.javaLogCountMax,
+                params.nativeLogCountMax,
+                params.anrLogCountMax,
+                params.placeholderCountMax,
+                params.placeholderSizeKb,
+                params.logFileMaintainDelayMs);
 
         if (params.enableJavaCrashHandler || params.enableNativeCrashHandler || params.enableAnrHandler) {
             if (ctx instanceof Application) {
@@ -143,72 +148,72 @@ public final class XCrash {
         //init java crash handler
         if (params.enableJavaCrashHandler) {
             JavaCrashHandler.getInstance().initialize(
-                pid,
-                processName,
-                appId,
-                params.appVersion,
-                params.logDir,
-                params.javaRethrow,
-                params.javaLogcatSystemLines,
-                params.javaLogcatEventsLines,
-                params.javaLogcatMainLines,
-                params.javaDumpFds,
-                params.javaDumpNetworkInfo,
-                params.javaDumpAllThreads,
-                params.javaDumpAllThreadsCountMax,
-                params.javaDumpAllThreadsWhiteList,
-                params.javaCallback);
+                    pid,
+                    processName,
+                    appId,
+                    params.appVersion,
+                    params.logDir,
+                    params.javaRethrow,
+                    params.javaLogcatSystemLines,
+                    params.javaLogcatEventsLines,
+                    params.javaLogcatMainLines,
+                    params.javaDumpFds,
+                    params.javaDumpNetworkInfo,
+                    params.javaDumpAllThreads,
+                    params.javaDumpAllThreadsCountMax,
+                    params.javaDumpAllThreadsWhiteList,
+                    params.javaCallback);
         }
 
         //init ANR handler (API level < 21)
         if (params.enableAnrHandler && Build.VERSION.SDK_INT < 21) {
             AnrHandler.getInstance().initialize(
-                ctx,
-                pid,
-                processName,
-                appId,
-                params.appVersion,
-                params.logDir,
-                params.anrCheckProcessState,
-                params.anrLogcatSystemLines,
-                params.anrLogcatEventsLines,
-                params.anrLogcatMainLines,
-                params.anrDumpFds,
-                params.anrDumpNetworkInfo,
-                params.anrCallback);
+                    ctx,
+                    pid,
+                    processName,
+                    appId,
+                    params.appVersion,
+                    params.logDir,
+                    params.anrCheckProcessState,
+                    params.anrLogcatSystemLines,
+                    params.anrLogcatEventsLines,
+                    params.anrLogcatMainLines,
+                    params.anrDumpFds,
+                    params.anrDumpNetworkInfo,
+                    params.anrCallback);
         }
 
         //init native crash handler / ANR handler (API level >= 21)
         int r = Errno.OK;
         if (params.enableNativeCrashHandler || (params.enableAnrHandler && Build.VERSION.SDK_INT >= 21)) {
             r = NativeHandler.getInstance().initialize(
-                ctx,
-                params.libLoader,
-                appId,
-                params.appVersion,
-                params.logDir,
-                params.enableNativeCrashHandler,
-                params.nativeRethrow,
-                params.nativeLogcatSystemLines,
-                params.nativeLogcatEventsLines,
-                params.nativeLogcatMainLines,
-                params.nativeDumpElfHash,
-                params.nativeDumpMap,
-                params.nativeDumpFds,
-                params.nativeDumpNetworkInfo,
-                params.nativeDumpAllThreads,
-                params.nativeDumpAllThreadsCountMax,
-                params.nativeDumpAllThreadsWhiteList,
-                params.nativeCallback,
-                params.enableAnrHandler && Build.VERSION.SDK_INT >= 21,
-                params.anrRethrow,
-                params.anrCheckProcessState,
-                params.anrLogcatSystemLines,
-                params.anrLogcatEventsLines,
-                params.anrLogcatMainLines,
-                params.anrDumpFds,
-                params.anrDumpNetworkInfo,
-                params.anrCallback);
+                    ctx,
+                    params.libLoader,
+                    appId,
+                    params.appVersion,
+                    params.logDir,
+                    params.enableNativeCrashHandler,
+                    params.nativeRethrow,
+                    params.nativeLogcatSystemLines,
+                    params.nativeLogcatEventsLines,
+                    params.nativeLogcatMainLines,
+                    params.nativeDumpElfHash,
+                    params.nativeDumpMap,
+                    params.nativeDumpFds,
+                    params.nativeDumpNetworkInfo,
+                    params.nativeDumpAllThreads,
+                    params.nativeDumpAllThreadsCountMax,
+                    params.nativeDumpAllThreadsWhiteList,
+                    params.nativeCallback,
+                    params.enableAnrHandler && Build.VERSION.SDK_INT >= 21,
+                    params.anrRethrow,
+                    params.anrCheckProcessState,
+                    params.anrLogcatSystemLines,
+                    params.anrLogcatEventsLines,
+                    params.anrLogcatMainLines,
+                    params.anrDumpFds,
+                    params.anrDumpNetworkInfo,
+                    params.anrCallback);
         }
 
         //maintain tombstone and placeholder files in a background thread with some delay
@@ -223,11 +228,11 @@ public final class XCrash {
     public static class InitParameters {
 
         //common
-        String     appVersion             = null;
-        String     logDir                 = null;
-        int        logFileMaintainDelayMs = 5000;
-        ILogger    logger                 = null;
-        ILibLoader libLoader              = null;
+        String appVersion = null;
+        String logDir = null;
+        int logFileMaintainDelayMs = 5000;
+        ILogger logger = null;
+        ILibLoader libLoader = null;
 
         /**
          * Set App version. You can use this method to set an internal test/gray version number.
@@ -291,7 +296,7 @@ public final class XCrash {
 
         //placeholder
         int placeholderCountMax = 0;
-        int placeholderSizeKb   = 128;
+        int placeholderSizeKb = 128;
 
         /**
          * Set the maximum number of placeholder files in the log directory. (Default: 0)
@@ -320,18 +325,18 @@ public final class XCrash {
         }
 
         //java crash
-        boolean        enableJavaCrashHandler      = true;
-        boolean        javaRethrow                 = true;
-        int            javaLogCountMax             = 10;
-        int            javaLogcatSystemLines       = 50;
-        int            javaLogcatEventsLines       = 50;
-        int            javaLogcatMainLines         = 200;
-        boolean        javaDumpFds                 = true;
-        boolean        javaDumpNetworkInfo         = true;
-        boolean        javaDumpAllThreads          = true;
-        int            javaDumpAllThreadsCountMax  = 0;
-        String[]       javaDumpAllThreadsWhiteList = null;
-        ICrashCallback javaCallback                = null;
+        boolean enableJavaCrashHandler = true;
+        boolean javaRethrow = true;
+        int javaLogCountMax = 10;
+        int javaLogcatSystemLines = 50;
+        int javaLogcatEventsLines = 50;
+        int javaLogcatMainLines = 200;
+        boolean javaDumpFds = true;
+        boolean javaDumpNetworkInfo = true;
+        boolean javaDumpAllThreads = true;
+        int javaDumpAllThreadsCountMax = 0;
+        String[] javaDumpAllThreadsWhiteList = null;
+        ICrashCallback javaCallback = null;
 
         /**
          * Enable the Java exception capture feature. (Default: enable)
@@ -496,20 +501,20 @@ public final class XCrash {
         }
 
         //native crash
-        boolean        enableNativeCrashHandler      = true;
-        boolean        nativeRethrow                 = true;
-        int            nativeLogCountMax             = 10;
-        int            nativeLogcatSystemLines       = 50;
-        int            nativeLogcatEventsLines       = 50;
-        int            nativeLogcatMainLines         = 200;
-        boolean        nativeDumpElfHash             = true;
-        boolean        nativeDumpMap                 = true;
-        boolean        nativeDumpFds                 = true;
-        boolean        nativeDumpNetworkInfo         = true;
-        boolean        nativeDumpAllThreads          = true;
-        int            nativeDumpAllThreadsCountMax  = 0;
-        String[]       nativeDumpAllThreadsWhiteList = null;
-        ICrashCallback nativeCallback                = null;
+        boolean enableNativeCrashHandler = true;
+        boolean nativeRethrow = true;
+        int nativeLogCountMax = 10;
+        int nativeLogcatSystemLines = 50;
+        int nativeLogcatEventsLines = 50;
+        int nativeLogcatMainLines = 200;
+        boolean nativeDumpElfHash = true;
+        boolean nativeDumpMap = true;
+        boolean nativeDumpFds = true;
+        boolean nativeDumpNetworkInfo = true;
+        boolean nativeDumpAllThreads = true;
+        int nativeDumpAllThreadsCountMax = 0;
+        String[] nativeDumpAllThreadsWhiteList = null;
+        ICrashCallback nativeCallback = null;
 
         /**
          * Enable the native crash capture feature. (Default: enable)
@@ -702,16 +707,16 @@ public final class XCrash {
         }
 
         //anr
-        boolean        enableAnrHandler     = true;
-        boolean        anrRethrow           = true;
-        boolean        anrCheckProcessState = true;
-        int            anrLogCountMax       = 10;
-        int            anrLogcatSystemLines = 50;
-        int            anrLogcatEventsLines = 50;
-        int            anrLogcatMainLines   = 200;
-        boolean        anrDumpFds           = true;
-        boolean        anrDumpNetworkInfo   = true;
-        ICrashCallback anrCallback          = null;
+        boolean enableAnrHandler = true;
+        boolean anrRethrow = true;
+        boolean anrCheckProcessState = true;
+        int anrLogCountMax = 10;
+        int anrLogcatSystemLines = 50;
+        int anrLogcatEventsLines = 50;
+        int anrLogcatMainLines = 200;
+        boolean anrDumpFds = true;
+        boolean anrDumpNetworkInfo = true;
+        ICrashCallback anrCallback = null;
 
         /**
          * Enable the ANR capture feature. (Default: enable)
@@ -877,17 +882,50 @@ public final class XCrash {
      */
     @SuppressWarnings("unused")
     public static void testJavaCrash(boolean runInNewThread) throws RuntimeException {
-        if (runInNewThread) {
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
+        Random random = new Random();
+        int num = random.nextInt(6);
+        logger.d(TAG, "testJavaCrash case:" + num);
+        switch (num) {
+            case 1:
+            default:
+                if (runInNewThread) {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            throw new RuntimeException("test java exception");
+                        }
+                    };
+                    thread.setName("xcrash_test_java_thread");
+                    thread.start();
+                } else {
                     throw new RuntimeException("test java exception");
                 }
-            };
-            thread.setName("xcrash_test_java_thread");
-            thread.start();
-        } else {
-            throw new RuntimeException("test java exception");
+                break;
+            case 2:
+                int a = 3;
+                int b = 0;
+                int c = (int) Math.sqrt(b - a);
+                int d = (int) Math.log(b - a);
+                logger.d(TAG, "testJavaCrash case:2 c=" + c);
+                break;
+            case 3:
+                int f = 3;
+                int g = 0;
+                int h = f / g;
+                logger.d(TAG, "testJavaCrash case:3 h=" + h);
+                break;
+            case 4:
+                String str = null;
+                logger.d(TAG, "testJavaCrash case:4 str=" + str.substring(3));
+                break;
+            case 5:
+                File file = new File("test.txt");
+                file.mkdir();
+                file.listFiles();
+                file.delete();
+                file.setWritable(true);
+                logger.d(TAG, "testJavaCrash case:5 file=" + file);
+                break;
         }
     }
 

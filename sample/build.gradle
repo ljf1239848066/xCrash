@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('stub.jks')
+            storePassword '123456'
+            keyAlias = '123456'
+            keyPassword '123456'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
@@ -13,7 +21,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
