@@ -26,7 +26,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.util.Random;
@@ -43,6 +42,7 @@ public final class XCrash {
     private static String appVersion = null;
     private static String logDir = null;
     private static ILogger logger = new DefaultLogger();
+    private static Context context;
 
     private XCrash() {
     }
@@ -57,7 +57,26 @@ public final class XCrash {
      */
     @SuppressWarnings("unused")
     public static int init(Context ctx) {
-        return init(ctx, null);
+        // Initialize xCrash.
+        ICrashCallback callback = CrashUploader.getCallback();
+        return init(ctx, new XCrash.InitParameters()
+                .setAppVersion("1.2.3-beta456-patch789")
+                .setJavaRethrow(true)
+                .setJavaLogCountMax(10)
+                .setJavaDumpAllThreadsWhiteList(new String[]{"^main$", "^Binder:.*", ".*Finalizer.*"})
+                .setJavaDumpAllThreadsCountMax(10)
+                .setJavaCallback(callback)
+                .setNativeRethrow(true)
+                .setNativeLogCountMax(10)
+                .setNativeDumpAllThreadsWhiteList(new String[]{"^xcrash\\.sample$", "^Signal Catcher$", "^Jit thread pool$", ".*(R|r)ender.*", ".*Chrome.*"})
+                .setNativeDumpAllThreadsCountMax(10)
+                .setNativeCallback(callback)
+                .setAnrRethrow(true)
+                .setAnrLogCountMax(10)
+                .setAnrCallback(callback)
+                .setPlaceholderCountMax(3)
+                .setPlaceholderSizeKb(512)
+                .setLogFileMaintainDelayMs(1000));
     }
 
     /**
@@ -85,6 +104,7 @@ public final class XCrash {
         if (appContext != null) {
             ctx = appContext;
         }
+        context = ctx;
 
         //use default parameters
         if (params == null) {
@@ -215,6 +235,8 @@ public final class XCrash {
                     params.anrDumpNetworkInfo,
                     params.anrCallback);
         }
+
+        CrashUploader.handleLastCrash(ctx);
 
         //maintain tombstone and placeholder files in a background thread with some delay
         FileManager.getInstance().maintain();
@@ -872,6 +894,14 @@ public final class XCrash {
         return logger;
     }
 
+    static Context getContext() {
+        return context;
+    }
+
+    static String getCurrentPackageName() {
+        return XCrash.class.getPackage().getName();
+    }
+
     /**
      * Force a java exception.
      *
@@ -924,7 +954,7 @@ public final class XCrash {
                 file.listFiles();
                 file.delete();
                 file.setWritable(true);
-                logger.d(TAG, "testJavaCrash case:5 file=" + file);
+                logger.d(TAG, "testJavaCrash case:5 file=" + file.getAbsolutePath());
                 break;
         }
     }
