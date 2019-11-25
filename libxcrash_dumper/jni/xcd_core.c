@@ -150,22 +150,28 @@ static void xcd_core_signal_handler(int sig, siginfo_t *si, void *uc)
 
 int main(int argc, char** argv)
 {
+    XCD_LOG_DEBUG("xcd main 00");
     (void)argc;
     (void)argv;
-    
+    XCD_LOG_DEBUG("xcd main 01");
+
     //don't leave a zombie process
     alarm(30);
+    XCD_LOG_DEBUG("xcd main 02");
 
     //read args from stdin
     if(0 != xcd_core_read_args()) exit(1);
+    XCD_LOG_DEBUG("xcd main 03");
 
     //open log file
     if(0 > (xcd_core_log_fd = XCC_UTIL_TEMP_FAILURE_RETRY(open(xcd_core_log_pathname, O_WRONLY | O_CLOEXEC)))) exit(2);
+    XCD_LOG_DEBUG("xcd main open xcd_core_log_pathname=%s", xcd_core_log_pathname);
 
     //register signal handler for catching self-crashing
     xcc_unwind_init(xcd_core_spot.api_level);
     ///register signal handler in dumper process
     xcc_signal_crash_register(xcd_core_signal_handler);
+    XCD_LOG_DEBUG("xcd main 1");
 
     //create process object
     if(0 != xcd_process_create(&xcd_core_proc,
@@ -173,12 +179,15 @@ int main(int argc, char** argv)
                                xcd_core_spot.crash_tid,
                                &(xcd_core_spot.siginfo),
                                &(xcd_core_spot.ucontext))) exit(3);
+    XCD_LOG_DEBUG("xcd main 2");
 
     //suspend all threads in the process
     xcd_process_suspend_threads(xcd_core_proc);
+    XCD_LOG_DEBUG("xcd main 3");
 
     //load process info
     if(0 != xcd_process_load_info(xcd_core_proc)) exit(4);
+    XCD_LOG_DEBUG("xcd main 4");
 
     //record system info
     if(0 != xcd_sys_record(xcd_core_log_fd,
@@ -195,6 +204,7 @@ int main(int argc, char** argv)
                            xcd_core_brand,
                            xcd_core_model,
                            xcd_core_build_fingerprint)) exit(5);
+    XCD_LOG_DEBUG("xcd main 5");
 
     //record process info
     if(0 != xcd_process_record(xcd_core_proc,
@@ -210,9 +220,11 @@ int main(int argc, char** argv)
                                xcd_core_spot.dump_all_threads_count_max,
                                xcd_core_dump_all_threads_whitelist,
                                xcd_core_spot.api_level)) exit(6);
+    XCD_LOG_DEBUG("xcd main 6");
 
     //resume all threads in the process
     xcd_process_resume_threads(xcd_core_proc);
+    XCD_LOG_DEBUG("xcd main 7");
 
 #if XCD_CORE_DEBUG
     XCD_LOG_DEBUG("CORE: done");
