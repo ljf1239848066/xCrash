@@ -95,7 +95,8 @@ static int xcd_core_read_stdin_extra(char **buf, size_t len)
 static int xcd_core_read_args()
 {
     int r;
-    
+    XCD_LOG_DEBUG("xcd_core_read_args");
+
     if(0 != (r = xcd_core_read_stdin((void *)&xcd_core_spot, sizeof(xcc_spot_t)))) return r;
     if(0 != (r = xcd_core_read_stdin_extra(&xcd_core_log_pathname, xcd_core_spot.log_pathname_len))) return r;
     if(0 != (r = xcd_core_read_stdin_extra(&xcd_core_os_version, xcd_core_spot.os_version_len))) return r;
@@ -116,6 +117,7 @@ static int xcd_core_read_args()
 ///crash signal handler in dumper process
 static void xcd_core_signal_handler(int sig, siginfo_t *si, void *uc)
 {
+    XCD_LOG_DEBUG("xcd_core_signal_handler");
     char buf[2048] = "\0";
     size_t len;
 
