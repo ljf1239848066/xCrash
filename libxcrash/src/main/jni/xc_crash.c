@@ -143,6 +143,7 @@ static int xc_crash_exec_dumper(void *arg)
     for(i = 0; i < 1024; i++)
         if(i != xc_crash_log_fd)
             syscall(SYS_close, i);
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 1");
 
     //hold the fd 0, 1, 2
     errno = 0;

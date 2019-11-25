@@ -309,6 +309,7 @@ void xc_common_close_trace_log(int fd)
 
 int xc_common_seek_to_content_end(int fd)
 {
+    XCC_LOG_DEBUG("xc_common_seek_to_content_end");
     uint8_t buf[1024];
     ssize_t readed, n;
     off_t   offset = 0;
