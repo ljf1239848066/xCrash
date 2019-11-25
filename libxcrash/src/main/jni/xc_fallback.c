@@ -192,7 +192,6 @@ static size_t xc_fallback_get_regs(char *buf, size_t len, ucontext_t *uc)
 
 static size_t xc_fallback_get_backtrace(char *buf, size_t len, siginfo_t *si, ucontext_t *uc)
 {
-    XCC_LOG_DEBUG("xc_fallback_get_backtrace len=%llu", (unsigned long long)len);
     size_t used = 0;
 
     used += xcc_fmt_snprintf(buf + used, len - used, "backtrace:\n");
@@ -214,7 +213,6 @@ size_t xc_fallback_get_emergency(siginfo_t *si,
                                  char *emergency,
                                  size_t emergency_len)
 {
-    XCC_LOG_DEBUG("xc_fallback_get_emergency crash_time=%llu", (unsigned long long)crash_time);
     size_t used = xcc_util_get_dump_header(emergency, emergency_len,
                                            XCC_UTIL_CRASH_TYPE_NATIVE,
                                            xc_common_time_zone,
@@ -245,7 +243,6 @@ int xc_fallback_record(int log_fd,
                        int dump_fds,
                        int dump_network_info)
 {
-    XCC_LOG_DEBUG("xc_fallback_record log_fd=%d", log_fd);
     int r;
 
     if(log_fd < 0) return XCC_ERRNO_INVAL;

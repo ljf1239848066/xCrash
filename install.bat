@@ -1,8 +1,8 @@
-mkdir -p .\libxcrash\src\main\jniLibs\armeabi
-mkdir -p .\libxcrash\src\main\jniLibs\armeabi-v7a
-mkdir -p .\libxcrash\src\main\jniLibs\arm64-v8a
-mkdir -p .\libxcrash\src\main\jniLibs\x86
-mkdir -p .\libxcrash\src\main\jniLibs\x86_64
+mkdir .\libxcrash\src\main\jniLibs\armeabi
+mkdir .\libxcrash\src\main\jniLibs\armeabi-v7a
+mkdir .\libxcrash\src\main\jniLibs\arm64-v8a
+mkdir .\libxcrash\src\main\jniLibs\x86
+mkdir .\libxcrash\src\main\jniLibs\x86_64
 
 copy .\libxcrash_dumper\libs\armeabi\xcrash_dumper     libxcrash\src\main\jniLibs\armeabi\libxcrash_dumper.so /B
 copy .\libxcrash_dumper\libs\armeabi-v7a\xcrash_dumper libxcrash\src\main\jniLibs\armeabi-v7a\libxcrash_dumper.so /B
