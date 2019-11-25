@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testNativeCrashInMainThread_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="native crash (in main java thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testNativeCrashInAnotherJavaThread_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="native crash (in another java thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testNativeCrashInAnotherNativeThread_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="native crash (in another native thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testNativeCrashInAnotherActivity_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="native crash (in another activity)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -66,9 +66,9 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:onClick="testNativeCrashInAnotherProcess_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="native crash (in another process)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testJavaCrashInMainThread_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="java crash (in main java thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testJavaCrashInAnotherThread_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="java crash (in another java thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testJavaCrashInAnotherActivity_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="java crash (in another activity)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -113,9 +113,9 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:onClick="testJavaCrashInAnotherProcess_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="java crash (in another process)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
@@ -126,8 +126,30 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:onClick="testAnrInput_onClick"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:text="ANR (input timeout)"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/testJavaCrashInSampleInMainThread_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:onClick="testJavaCrashInSampleMainThread_onClick"
+                android:padding="10dp"
+                android:text="java crash (in sample main java thread)"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/testJavaCrashInSampleInAnotherThread_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:onClick="testJavaCrashInSampleAnotherThread_onClick"
+                android:padding="10dp"
+                android:text="java crash (in sample another java thread)"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -137,5 +159,5 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp" />
+        android:padding="10dp" />
 </LinearLayout>

@@ -21,8 +21,8 @@
 
 // Created by caikelun on 2019-03-07.
 
-#ifndef XCD_LOG_H
-#define XCD_LOG_H 1
+#ifndef XCC_LOG_H
+#define XCC_LOG_H 1
 
 #include <stdarg.h>
 #include <android/log.h>
@@ -31,26 +31,17 @@
 extern "C" {
 #endif
 
-#define XCD_LOG_PRIO ANDROID_LOG_VERBOSE
+#define XCC_LOG_PRIO ANDROID_LOG_VERBOSE
 
-#define XCD_LOG_TAG "xcrash_dumper"
+#define XCC_LOG_TAG "xcc_common"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
-#define XCD_LOG_DEBUG(fmt, ...) do{if(XCD_LOG_PRIO <= ANDROID_LOG_DEBUG) __android_log_print(ANDROID_LOG_DEBUG, XCD_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
-#define XCD_LOG_INFO(fmt, ...)  do{if(XCD_LOG_PRIO <= ANDROID_LOG_INFO)  __android_log_print(ANDROID_LOG_INFO,  XCD_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
-#define XCD_LOG_WARN(fmt, ...)  do{if(XCD_LOG_PRIO <= ANDROID_LOG_WARN)  __android_log_print(ANDROID_LOG_WARN,  XCD_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
-#define XCD_LOG_ERROR(fmt, ...) do{if(XCD_LOG_PRIO <= ANDROID_LOG_ERROR) __android_log_print(ANDROID_LOG_ERROR, XCD_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
+#define XCC_LOG_DEBUG(fmt, ...) do{if(XCC_LOG_PRIO <= ANDROID_LOG_DEBUG) __android_log_print(ANDROID_LOG_DEBUG, XCC_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
+#define XCC_LOG_INFO(fmt, ...)  do{if(XCC_LOG_PRIO <= ANDROID_LOG_INFO)  __android_log_print(ANDROID_LOG_INFO,  XCC_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
+#define XCC_LOG_WARN(fmt, ...)  do{if(XCC_LOG_PRIO <= ANDROID_LOG_WARN)  __android_log_print(ANDROID_LOG_WARN,  XCC_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
+#define XCC_LOG_ERROR(fmt, ...) do{if(XCC_LOG_PRIO <= ANDROID_LOG_ERROR) __android_log_print(ANDROID_LOG_ERROR, XCC_LOG_TAG, fmt, ##__VA_ARGS__);}while(0)
 #pragma clang diagnostic pop
-
-//debug-log flags for modules
-#define XCD_CORE_DEBUG          0
-#define XCD_THREAD_DEBUG        0
-#define XCD_ELF_DEBUG           0
-#define XCD_ELF_INTERFACE_DEBUG 0
-#define XCD_FRAMES_DEBUG        0
-#define XCD_DWARF_DEBUG         0
-#define XCD_ARM_EXIDX_DEBUG     0
 
 #ifdef __cplusplus
 }

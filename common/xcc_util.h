@@ -29,6 +29,7 @@
 #include <inttypes.h>
 #include <signal.h>
 #include <sys/syscall.h>
+#include "xcc_log.h"
 
 #ifdef __cplusplus
 extern "C" {

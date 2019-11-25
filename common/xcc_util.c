@@ -308,6 +308,7 @@ int xcc_util_write_format(int fd, const char *format, ...)
 
 int xcc_util_write_format_safe(int fd, const char *format, ...)
 {
+    XCC_LOG_DEBUG("xcc_util_write_format_safe");
     va_list ap;
     char    buf[1024];
     size_t  len;
@@ -500,6 +501,7 @@ size_t xcc_util_get_dump_header(char *buf,
                                 const char *model,
                                 const char *build_fingerprint)
 {
+    XCC_LOG_DEBUG("xcc_util_get_dump_header");
     time_t       start_sec  = (time_t)(start_time / 1000000);
     suseconds_t  start_usec = (time_t)(start_time % 1000000);
     struct tm    start_tm;
@@ -554,6 +556,7 @@ size_t xcc_util_get_dump_header(char *buf,
 static int xcc_util_record_logcat_buffer(int fd, pid_t pid, int api_level,
                                          const char *buffer, unsigned int lines, char priority)
 {
+    XCC_LOG_DEBUG("xcc_util_record_logcat_buffer");
     FILE *fp;
     char  cmd[128];
     char  buf[1025];
@@ -633,7 +636,7 @@ int xcc_util_record_fds(int fd, pid_t pid)
     xcc_util_dirent_t *ent;
     ssize_t            len;
     int                r = 0;
-
+    XCC_LOG_DEBUG("xcc_util_record_fds");
     if(0 != (r = xcc_util_write_str(fd, "open files:\n"))) return r;
 
     xcc_fmt_snprintf(path, sizeof(path), "/proc/%d/fd", pid);
@@ -685,6 +688,7 @@ int xcc_util_record_fds(int fd, pid_t pid)
 
 int xcc_util_record_network_info(int fd, pid_t pid, int api_level)
 {
+    XCC_LOG_DEBUG("xcc_util_record_network_info");
     int  r;
     char path[128];
 

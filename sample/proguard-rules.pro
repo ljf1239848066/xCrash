@@ -67,9 +67,6 @@
 -keep public class * extends android.view.View
 -keep public class com.android.vending.licensing.ILicensingService
 
--keep class xcrash.NativeHandler{*;}
-
-
 -keepattributes InnerClasses
 -keepattributes EnclosingMethod
 -dontoptimize

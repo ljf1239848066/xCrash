@@ -27,6 +27,7 @@
 #include <time.h>
 #include "xcc_util.h"
 #include "xcd_sys.h"
+#include "xcd_log.h"
 
 int xcd_sys_record(int fd,
                    long time_zone,
@@ -43,6 +44,7 @@ int xcd_sys_record(int fd,
                    const char *model,
                    const char *build_fingerprint)
 {
+    XCD_LOG_DEBUG("xcd_sys_record");
     char buf[1024];
     xcc_util_get_dump_header(buf, sizeof(buf),
                              XCC_UTIL_CRASH_TYPE_NATIVE,

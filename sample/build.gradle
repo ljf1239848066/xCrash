@@ -12,12 +12,17 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "xcrash.sample"
+        applicationId "com.geetest.xcrashsample"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            ndkBuild {
+                abiFilters 'armeabi', 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+            }
+        }
     }
     buildTypes {
         release {
@@ -39,6 +44,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(path: ':libxcrash_dumper')
     implementation project(path: ':libxcrash')
 }

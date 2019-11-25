@@ -101,10 +101,14 @@ static char            *xc_crash_dump_all_threads_whitelist = NULL;
 
 static int xc_crash_fork(int (*fn)(void *))
 {
+    XCC_LOG_DEBUG("xc_crash_fork");
 #ifndef __i386__
+    XCC_LOG_DEBUG("xc_crash_fork __i386__");
     return clone(fn, xc_crash_child_stack, CLONE_VFORK | CLONE_FS | CLONE_UNTRACED, NULL);
 #else
+    XCC_LOG_DEBUG("xc_crash_fork 64");
     pid_t dumper_pid = fork();
+    XCC_LOG_DEBUG("xc_crash_fork dumper_pid=%llu", (unsigned long long)dumper_pid);
     if(-1 == dumper_pid)
     {
         return -1;
@@ -132,8 +136,10 @@ static int xc_crash_fork(int (*fn)(void *))
 #endif
 }
 
+///fork dumper process
 static int xc_crash_exec_dumper(void *arg)
 {
+    XCC_LOG_DEBUG("xc_crash_exec_dumper xc_crash_log_fd=%d", xc_crash_log_fd);
     (void)arg;
 
     //for fd exhaust
@@ -142,10 +148,12 @@ static int xc_crash_exec_dumper(void *arg)
     for(i = 0; i < 1024; i++)
         if(i != xc_crash_log_fd)
             syscall(SYS_close, i);
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 1");
 
     //hold the fd 0, 1, 2
     errno = 0;
     int devnull = XCC_UTIL_TEMP_FAILURE_RETRY(open("/dev/null", O_RDWR));
+    XCC_LOG_DEBUG("xc_crash_exec_dumper devnull=%d", devnull);
     if(devnull < 0)
     {
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"open /dev/null failed, errno=%d\n\n", errno);
@@ -156,6 +164,7 @@ static int xc_crash_exec_dumper(void *arg)
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"/dev/null fd NOT 0, errno=%d\n\n", errno);
         return 91;
     }
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 2");
     XCC_UTIL_TEMP_FAILURE_RETRY(dup2(devnull, STDOUT_FILENO));
     XCC_UTIL_TEMP_FAILURE_RETRY(dup2(devnull, STDERR_FILENO));
     
@@ -167,6 +176,7 @@ static int xc_crash_exec_dumper(void *arg)
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"create args pipe failed, errno=%d\n\n", errno);
         return 92;
     }
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 3");
 
     //set args pipe size
     //range: pagesize (4K) ~ /proc/sys/fs/pipe-max-size (1024K)
@@ -188,6 +198,7 @@ static int xc_crash_exec_dumper(void *arg)
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"set args pipe size failed, errno=%d\n\n", errno);
         return 93;
     }
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 4");
 
     //write args to pipe
     struct iovec iovs[12] = {
@@ -212,21 +223,25 @@ static int xc_crash_exec_dumper(void *arg)
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"write args to pipe failed, return=%d, errno=%d\n\n", ret, errno);
         return 94;
     }
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 5");
 
     //copy the read-side of the args-pipe to stdin (fd: 0)
     XCC_UTIL_TEMP_FAILURE_RETRY(dup2(pipefd[0], STDIN_FILENO));
     
     syscall(SYS_close, pipefd[0]);
     syscall(SYS_close, pipefd[1]);
+    XCC_LOG_DEBUG("xc_crash_exec_dumper 6");
 
     //escape to the dumper process
     errno = 0;
+    XCC_LOG_DEBUG("xc_crash_exec_dumper xc_crash_dumper_pathname=%s", xc_crash_dumper_pathname);
     execl(xc_crash_dumper_pathname, XCC_UTIL_XCRASH_DUMPER_FILENAME, NULL);
     return 100 + errno;
 }
 
 static void xc_xcrash_record_java_stacktrace()
 {
+    XCC_LOG_DEBUG("xc_xcrash_record_java_stacktrace");
     JNIEnv                           *env     = NULL;
     xc_dl_t                          *libcpp  = NULL;
     xc_dl_t                          *libart  = NULL;
@@ -244,6 +259,7 @@ static void xc_xcrash_record_java_stacktrace()
 
     //yes, this is a java thread
     xc_crash_dump_java_stacktrace = 1;
+    XCC_LOG_DEBUG("xc_xcrash_record_java_stacktrace xc_crash_dump_java_stacktrace xc_common_api_level=%d", xc_common_api_level);
 
     //in Dalvik, get java stacktrace on the java layer
     if(xc_common_api_level < 21) return;
@@ -385,8 +401,10 @@ static int xc_crash_check_backtrace_valid()
     return r;    
 }
 
+///crash signal handler in main process
 static void xc_crash_signal_handler(int sig, siginfo_t *si, void *uc)
 {
+    XCC_LOG_DEBUG("xc_crash_signal_handler sig=%d", sig);
     struct timespec crash_tp;
     int             restore_orig_ptracer = 0;
     int             restore_orig_dumpable = 0;
@@ -471,6 +489,7 @@ static void xc_crash_signal_handler(int sig, siginfo_t *si, void *uc)
     //spawn crash dumper process
     errno = 0;
     pid_t dumper_pid = xc_crash_fork(xc_crash_exec_dumper);
+    XCC_LOG_DEBUG("xc_crash_signal_handler dumper_pid=%llu", (unsigned long long)dumper_pid);
     if(-1 == dumper_pid)
     {
         xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"fork failed, errno=%d\n\n", errno);
@@ -483,6 +502,8 @@ static void xc_crash_signal_handler(int sig, siginfo_t *si, void *uc)
     errno = 0;
     int status = 0;
     int wait_r = XCC_UTIL_TEMP_FAILURE_RETRY(waitpid(dumper_pid, &status, __WALL));
+    XCC_LOG_DEBUG("xc_crash_signal_handler wait_r=%llu xc_crash_log_from_placeholder=%llu",
+            (unsigned long long)wait_r, (unsigned long long)xc_crash_log_from_placeholder);
 
     //the crash dumper process should have written a lot of logs,
     //so we need to seek to the end of log file
@@ -502,22 +523,26 @@ static void xc_crash_signal_handler(int sig, siginfo_t *si, void *uc)
     {
         if(WIFEXITED(status) && 0 != WEXITSTATUS(status))
         {
+            XCC_LOG_DEBUG("xc_crash_signal_handler WEXITSTATUS 1");
             //terminated normally, but return / exit / _exit NON-zero
             xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"child terminated normally with non-zero exit status(%d), dumper=%s\n\n", WEXITSTATUS(status), xc_crash_dumper_pathname);
             goto end;
         }
         else if(WIFSIGNALED(status))
         {
+            XCC_LOG_DEBUG("xc_crash_signal_handler WEXITSTATUS 2");
             //terminated by a signal
             xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"child terminated by a signal(%d)\n\n", WTERMSIG(status));
             goto end;
         }
         else
         {
+            XCC_LOG_DEBUG("xc_crash_signal_handler WEXITSTATUS 3");
             xcc_util_write_format_safe(xc_crash_log_fd, XC_CRASH_ERR_TITLE"child terminated with other error status(%d), dumper=%s\n\n", status, xc_crash_dumper_pathname);
             goto end;
         }
     }
+    XCC_LOG_DEBUG("xc_crash_signal_handler WEXITSTATUS 4");
 
     //check the backtrace
     if(!xc_crash_check_backtrace_valid()) goto end;
@@ -531,6 +556,7 @@ static void xc_crash_signal_handler(int sig, siginfo_t *si, void *uc)
     //restore traceable
     if(restore_orig_ptracer) prctl(PR_SET_PTRACER, 0);
 
+    XCC_LOG_DEBUG("xc_crash_signal_handler dump_ok=%d", dump_ok);
     //fallback
     if(!dump_ok)
     {
@@ -720,7 +746,7 @@ int xc_crash_init(JNIEnv *env,
     if(0 != pipe2(xc_crash_child_notifier, O_CLOEXEC)) return XCC_ERRNO_SYS;
 #endif
     
-    //register signal handler
+    //register signal handler in main process
     return xcc_signal_crash_register(xc_crash_signal_handler);
 }
 

@@ -33,6 +33,7 @@
 #include "xcc_signal.h"
 #include "xcc_errno.h"
 #include "xcc_libc_support.h"
+#include "xcc_log.h"
 
 #define XCC_SIGNAL_CRASH_STACK_SIZE (1024 * 128)
 
@@ -57,8 +58,10 @@ static xcc_signal_crash_info_t xcc_signal_crash_info[] =
     {.signum = SIGSTKFLT}
 };
 
+///register signal handler
 int xcc_signal_crash_register(void (*handler)(int, siginfo_t *, void *))
 {
+    XCC_LOG_DEBUG("xcc_signal_crash_register");
     stack_t ss;
     if(NULL == (ss.ss_sp = calloc(1, XCC_SIGNAL_CRASH_STACK_SIZE))) return XCC_ERRNO_NOMEM;
     ss.ss_size  = XCC_SIGNAL_CRASH_STACK_SIZE;
@@ -78,9 +81,10 @@ int xcc_signal_crash_register(void (*handler)(int, siginfo_t *, void *))
 
     return 0;
 }
-
+///reregister original signal handler
 int xcc_signal_crash_unregister(void)
 {
+    XCC_LOG_DEBUG("xcc_signal_crash_unregister");
     int r = 0;
     size_t i;
     for(i = 0; i < sizeof(xcc_signal_crash_info) / sizeof(xcc_signal_crash_info[0]); i++)
@@ -89,9 +93,10 @@ int xcc_signal_crash_unregister(void)
     
     return r;
 }
-
+///ignore current signal
 int xcc_signal_crash_ignore(void)
 {
+    XCC_LOG_DEBUG("xcc_signal_crash_ignore");
     struct sigaction act;
     xcc_libc_support_memset(&act, 0, sizeof(act));
     sigemptyset(&act.sa_mask);
@@ -109,8 +114,12 @@ int xcc_signal_crash_ignore(void)
 
 int xcc_signal_crash_queue(siginfo_t* si)
 {
+    XCC_LOG_DEBUG("xcc_signal_crash_queue");
     if(SIGABRT == si->si_signo || SI_FROMUSER(si))
     {
+        /// send a signal plus data to a process or thread. The receiver of the signal can obtain
+        /// the accompanying data by establishing a signal handler with the sigaction(2) SA_SIGINFO
+        /// flag.
         if(0 != syscall(SYS_rt_tgsigqueueinfo, getpid(), gettid(), si->si_signo, si))
             return XCC_ERRNO_SYS;
     }
@@ -123,6 +132,7 @@ static struct sigaction xcc_signal_trace_oldact;
 
 int xcc_signal_trace_register(void (*handler)(int, siginfo_t *, void *))
 {
+    XCC_LOG_DEBUG("xcc_signal_trace_register");
     int              r;
     sigset_t         set;
     struct sigaction act;
@@ -148,6 +158,7 @@ int xcc_signal_trace_register(void (*handler)(int, siginfo_t *, void *))
 
 void xcc_signal_trace_unregister(void)
 {
+    XCC_LOG_DEBUG("xcc_signal_trace_unregister");
     pthread_sigmask(SIG_SETMASK, &xcc_signal_trace_oldset, NULL);
     sigaction(SIGQUIT, &xcc_signal_trace_oldact, NULL);
 }

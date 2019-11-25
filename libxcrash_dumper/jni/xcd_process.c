@@ -102,6 +102,7 @@ static int xcd_process_load_threads(xcd_process_t *self)
 
 int xcd_process_create(xcd_process_t **self, pid_t pid, pid_t crash_tid, siginfo_t *si, ucontext_t *uc)
 {
+    XCD_LOG_DEBUG("xcd_process_create");
     int                r;
     xcd_thread_info_t *thd;
     
@@ -152,6 +153,7 @@ void xcd_process_resume_threads(xcd_process_t *self)
 
 int xcd_process_load_info(xcd_process_t *self)
 {
+    XCD_LOG_DEBUG("xcd_process_load_info");
     int                r;
     xcd_thread_info_t *thd;
     char               buf[256];
@@ -180,6 +182,7 @@ int xcd_process_load_info(xcd_process_t *self)
 
 static int xcd_process_record_signal_info(xcd_process_t *self, int log_fd)
 {
+    XCD_LOG_DEBUG("xcd_process_record_signal_info");
     //fault addr
     char addr_desc[64];
     if(xcc_util_signal_has_si_addr(self->si))
@@ -216,6 +219,7 @@ static int xcd_process_record_signal_info(xcd_process_t *self, int log_fd)
 
 static int xcd_process_get_abort_message_29(xcd_process_t *self, char *buf, size_t buf_len)
 {
+    XCD_LOG_DEBUG("xcd_process_get_abort_message_29");
     //
     // struct abort_msg_t {
     //     size_t size;
@@ -258,6 +262,7 @@ static int xcd_process_get_abort_message_29(xcd_process_t *self, char *buf, size
 
 static int xcd_process_get_abort_message_14(xcd_process_t *self, char *buf, size_t buf_len)
 {
+    XCD_LOG_DEBUG("xcd_process_get_abort_message_14");
     //
     // struct abort_msg_t {
     //     size_t size;
@@ -309,6 +314,7 @@ static int xcd_process_get_abort_message_14(xcd_process_t *self, char *buf, size
 
 static int xcd_process_record_abort_message(xcd_process_t *self, int log_fd, int api_level)
 {
+    XCD_LOG_DEBUG("xcd_process_record_abort_message");
     char msg[256 + 1];
     memset(msg, 0, sizeof(msg));
 
@@ -335,6 +341,7 @@ static int xcd_process_record_abort_message(xcd_process_t *self, int log_fd, int
 
 static regex_t *xcd_process_build_whitelist_regex(char *dump_all_threads_whitelist, size_t *re_cnt)
 {
+    XCD_LOG_DEBUG("xcd_process_build_whitelist_regex");
     if(NULL == dump_all_threads_whitelist || 0 == strlen(dump_all_threads_whitelist)) return NULL;
 
     char *p = dump_all_threads_whitelist;
@@ -400,6 +407,7 @@ int xcd_process_record(xcd_process_t *self,
                        char *dump_all_threads_whitelist,
                        int api_level)
 {
+    XCD_LOG_DEBUG("xcd_process_record");
     int                r = 0;
     xcd_thread_info_t *thd;
     regex_t           *re = NULL;

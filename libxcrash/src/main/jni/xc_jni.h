@@ -56,7 +56,7 @@ extern "C" {
     } while(0)
 
 #define XC_JNI_VERSION    JNI_VERSION_1_6
-#define XC_JNI_CLASS_NAME "xcrash/NativeHandler"
+#define XC_JNI_CLASS_NAME "com/geetest/xcrash/NativeHandler"
 
 #ifdef __cplusplus
 }
