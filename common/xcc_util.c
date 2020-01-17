@@ -308,7 +308,6 @@ int xcc_util_write_format(int fd, const char *format, ...)
 
 int xcc_util_write_format_safe(int fd, const char *format, ...)
 {
-    XCC_LOG_DEBUG("xcc_util_write_format_safe");
     va_list ap;
     char    buf[1024];
     size_t  len;
@@ -319,7 +318,7 @@ int xcc_util_write_format_safe(int fd, const char *format, ...)
     len = xcc_fmt_vsnprintf(buf, sizeof(buf), format, ap);
     va_end(ap);
     if(0 == len) return 0;
-    
+
     return xcc_util_write(fd, buf, len);
 }
 

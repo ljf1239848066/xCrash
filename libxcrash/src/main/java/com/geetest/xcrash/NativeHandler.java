@@ -44,7 +44,7 @@ class NativeHandler {
     private ICrashCallback anrCallback;
 
     private boolean initNativeLibOk = false;
-    final static String LIBNAME = "xcrash";
+    final static String LIBNAME = "excrash";
 
     private NativeHandler() {
     }

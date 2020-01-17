@@ -8,7 +8,7 @@ LOCAL_SRC_FILES        := xc_test.c
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE           := xcrash
+LOCAL_MODULE           := excrash
 LOCAL_CFLAGS           := -std=c11 -Weverything -Werror -fvisibility=hidden
 LOCAL_LDLIBS           := -ldl -llog
 LOCAL_STATIC_LIBRARIES := test

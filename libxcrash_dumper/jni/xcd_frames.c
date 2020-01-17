@@ -258,7 +258,7 @@ int xcd_frames_record_backtrace(xcd_frames_t *self, int log_fd)
     char        *func;
     char         func_buf[512];
     int          r;
-
+    XCD_LOG_DEBUG("xcd_frames_record_backtrace");
     if(0 != (r = xcc_util_write_str(log_fd, "backtrace:\n"))) return r;
     
     TAILQ_FOREACH(frame, &(self->frames), link)

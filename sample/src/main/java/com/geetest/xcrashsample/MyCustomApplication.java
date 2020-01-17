@@ -42,5 +42,4 @@ public class MyCustomApplication extends Application {
 
         Log.d(TAG, "xCrash SDK init: end");
     }
-
 }

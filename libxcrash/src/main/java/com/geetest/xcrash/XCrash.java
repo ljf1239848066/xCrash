@@ -68,7 +68,7 @@ public final class XCrash {
                 .setFilterInnerCrash(true)
                 .addInnerPkgName(Util.getPackagePreffix(XCrash.class))
                 .addInnerPkgName(Util.getPackagePreffix(NativeHandler.class))
-                .setNativeRethrow(true)
+                .setNativeRethrow(false)
                 .setNativeLogCountMax(10)
                 .setNativeDumpAllThreadsWhiteList(new String[]{"^com\\.geetest\\.xcrashsample$", "^Signal Catcher$", "^Jit thread pool$", ".*(R|r)ender.*", ".*Chrome.*"})
                 .setNativeDumpAllThreadsCountMax(10)
