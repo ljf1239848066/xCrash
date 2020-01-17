@@ -323,19 +323,22 @@ implements   MappingProcessor
                     outLine.append(line.substring(lineIndex));
 
                     // Print out the processed line.
-                    System.out.println(outLine);
+//                    System.out.println(outLine);
+                    Logger.get().e(outLine.toString());
 
                     // Print out any additional lines.
                     for (int extraLineIndex = 0; extraLineIndex < extraOutLines.size(); extraLineIndex++)
                     {
-                        System.out.println(extraOutLines.get(extraLineIndex));
+                        Logger.get().e(extraOutLines.get(extraLineIndex).toString());
+//                        System.out.println(extraOutLines.get(extraLineIndex));
                     }
                 }
                 else
                 {
                     // The line didn't match the regular expression.
                     // Print out the original line.
-                    System.out.println(line);
+//                    System.out.println(line);
+                    Logger.get().e(line);
                 }
             }
         }
