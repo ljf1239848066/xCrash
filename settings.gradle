@@ -1,2 +1,2 @@
-include ':sample', ':libxcrash', ':libxcrash_dumper'
+include ':sample', ':libxcrash', ':libxcrash_dumper', ':retracer'
 rootProject.name='xCrash'

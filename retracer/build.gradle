@@ -1,0 +1,71 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+//    implementation('com.sun.kvem:kenv:2.2')
+}
+
+configurations {
+    exclude
+}
+
+def srcDir = new File(projectDir, "src")
+def libsDir = new File(projectDir, "libs")
+def outlibDir = new File(buildDir, "libs")
+def srcJar = new File(outlibDir, 'retracer.jar')
+def unZipJarFile = new File(buildDir, 'unzipjar')
+
+/** 任务开始之前删除之前的临时目录 */
+task deleteDir(type: Delete) {
+    delete unZipJarFile
+}
+
+/** Zip 解压 aar 包中的 classes.jar */
+
+task unzipJar1(type: Copy) {
+    def zipFile = new File(libsDir, 'proguard.jar')
+    def outputDir = unZipJarFile
+    from zipTree(zipFile)
+    into outputDir
+}
+task unzipJar2(type: Copy) {
+    def zipFile = new File(libsDir, 'retrace.jar')
+    def outputDir = unZipJarFile
+    from zipTree(zipFile)
+    into outputDir
+}
+
+/** 重新打包 jar 包 */
+task sourceJar(type: Jar) {
+    group 'Geetest'
+    description '生成一个包含依赖的jar包'
+//    classifier = 'sources'
+    baseName = 'retracer'
+    from unZipJarFile
+    from project.file('src/main/java/')
+//    manifest { attributes 'Main-Class': 'com.geetest.retrace.ReTrace' }
+    manifest { attributes 'Main-Class': 'proguard.retrace.ReTrace' }
+    destinationDir outlibDir
+}
+sourceJar.dependsOn unzipJar1, unzipJar2
+
+artifacts {
+    exclude sourceJar
+}
+
+jar {
+    //项目名，也是生成的jar的名字
+    baseName = "retracer"
+    //项目版本号，这部分内容会写进manifest
+//    version = "1.0"
+    //项目的manifest定义，其中就包含最关键的入口类定义
+    manifest { attributes 'Main-Class': 'proguard.retrace.ReTrace' }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked"
+    }
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
