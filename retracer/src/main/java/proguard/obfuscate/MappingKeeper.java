@@ -177,35 +177,6 @@ public class MappingKeeper implements MappingProcessor
 
     @Override
     public void processMethodMapping(String className, int firstLineNumber, int lastLineNumber, String methodReturnType, String methodName, String methodArguments, int origFirstLineNumber, int origLastLineNumber, String newMethodName) {
-        if (clazz != null)
-        {
-            // Find the method.
-            String descriptor = ClassUtil.internalMethodDescriptor(methodReturnType,
-                    ListUtil.commaSeparatedList(methodArguments));
-
-            Method method = clazz.findMethod(methodName, descriptor);
-            if (method != null)
-            {
-                // Print out a warning if the mapping conflicts with a name that
-                // was set before.
-                if (warningPrinter != null)
-                {
-                    String currentNewName = MemberObfuscator.newMemberName(method);
-                    if (currentNewName != null &&
-                            !currentNewName.equals(newMethodName))
-                    {
-                        warningPrinter.print(ClassUtil.internalClassName(className),
-                                "Warning: " +
-                                        className +
-                                        ": method '" + methodReturnType + " " + methodName + JavaConstants.METHOD_ARGUMENTS_OPEN + methodArguments + JavaConstants.METHOD_ARGUMENTS_CLOSE +
-                                        "' is not being kept as '" + currentNewName +
-                                        "', but remapped to '" + newMethodName + "'");
-                    }
-                }
-
-                // Make sure the mapping name will be kept.
-                MemberObfuscator.setFixedNewMemberName(method, newMethodName);
-            }
-        }
+        processMethodMapping(className, firstLineNumber, lastLineNumber, methodReturnType, methodName, methodArguments, newMethodName);
     }
 }

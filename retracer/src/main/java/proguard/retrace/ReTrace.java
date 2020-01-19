@@ -20,7 +20,6 @@
  */
 package proguard.retrace;
 
-import com.geetest.retrace.log.ILogger;
 import com.geetest.retrace.log.Logger;
 
 import proguard.classfile.util.ClassUtil;
@@ -103,7 +102,6 @@ implements   MappingProcessor
         this.verbose           = verbose;
         this.mappingFile       = mappingFile;
         this.stackTraceFile    = stackTraceFile;
-//        Logger.get().i("ReTrace regularExpression=" + regularExpression + ",verbose=" + verbose + ",mappingFile=" + mappingFile + ",stackTraceFile=" + stackTraceFile);
     }
 
 
@@ -287,7 +285,6 @@ implements   MappingProcessor
                                         lineNumber = Integer.parseInt(match);
                                         outLine.append(match);
                                     }
-//                                    originalLineNumber(className, match, lineNumber, type, arguments, outLine);
                                     break;
 
                                 case 't':
@@ -330,12 +327,10 @@ implements   MappingProcessor
 
                     // Print out the processed line.
                     System.out.println(outLine);
-//                    Logger.get().e(outLine.toString());
 
                     // Print out any additional lines.
                     for (int extraLineIndex = 0; extraLineIndex < extraOutLines.size(); extraLineIndex++)
                     {
-//                        Logger.get().e(extraOutLines.get(extraLineIndex).toString());
                         System.out.println(extraOutLines.get(extraLineIndex));
                     }
                 }
@@ -344,7 +339,6 @@ implements   MappingProcessor
                     // The line didn't match the regular expression.
                     // Print out the original line.
                     System.out.println(line);
-//                    Logger.get().e(line);
                 }
             }
         }
@@ -526,37 +520,6 @@ implements   MappingProcessor
             outLine.append(obfuscatedMethodName);
         }
         return origLineNumber;
-    }
-
-
-    private void originalLineNumber(String       className,
-                                    String       obfuscatedMethodName,
-                                    int          lineNumber,
-                                    String       type,
-                                    String       arguments,
-                                    StringBuffer outLine)
-    {
-        // Class name -> obfuscated method names.
-        Map methodMap = (Map)classMethodMap.get(className);
-        if (methodMap != null)
-        {
-            // Obfuscated method names -> methods.
-            Set methodSet = (Set)methodMap.get(obfuscatedMethodName);
-            if (methodSet != null)
-            {
-                // Find all matching methods.
-                Iterator methodInfoIterator = methodSet.iterator();
-                while (methodInfoIterator.hasNext())
-                {
-                    MethodInfo methodInfo = (MethodInfo)methodInfoIterator.next();
-                    if (methodInfo.matches(lineNumber, type, arguments))
-                    {
-                        // Is this the first matching method?
-                        outLine.append(methodInfo.origFirstLineNumber);
-                    }
-                }
-            }
-        }
     }
 
 
@@ -787,7 +750,7 @@ implements   MappingProcessor
      */
     public static void main(String[] args)
     {
-        Logger log = Logger.get().setLevel(ILogger.VERBOSE).setTag("ReTrace");
+        Logger log = Logger.get().setLevel(Logger.VERBOSE).setTag("ReTrace");
         if (args.length < 1)
         {
             System.err.println("Usage: java proguard.ReTrace [-verbose] <mapping_file> [<stacktrace_file>]");

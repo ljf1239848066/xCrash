@@ -177,8 +177,8 @@ public class MappingReader
             }
             else
             {
-                int firstLineNumber = 0;
-                int lastLineNumber  = 0;
+                int firstLineNumber     = 0;
+                int lastLineNumber      = 0;
                 int origFirstLineNumber = 0;
                 int origLastLineNumber  = 0;
 
@@ -191,12 +191,12 @@ public class MappingReader
                 // parse original line number
                 if(colonIndex3 > 0) {
                     origFirstLineNumber = Integer.parseInt(line.substring(colonIndex3 + 1, colonIndex4).trim());
-                    origLastLineNumber = Integer.parseInt(line.substring(colonIndex4 + 1, arrowIndex).trim());
+                    origLastLineNumber  = Integer.parseInt(line.substring(colonIndex4 + 1, arrowIndex).trim());
                 }
 
                 String arguments = line.substring(argumentIndex1 + 1, argumentIndex2).trim();
 
-                if(colonIndex3>0) {
+                if(colonIndex3 > 0) {
                     mappingProcessor.processMethodMapping(className,
                             firstLineNumber,
                             lastLineNumber,
