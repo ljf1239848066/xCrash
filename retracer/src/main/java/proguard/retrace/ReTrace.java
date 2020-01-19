@@ -104,6 +104,7 @@ implements   MappingProcessor
         this.verbose           = verbose;
         this.mappingFile       = mappingFile;
         this.stackTraceFile    = stackTraceFile;
+//        Logger.get().i("ReTrace regularExpression=" + regularExpression + ",verbose=" + verbose + ",mappingFile=" + mappingFile + ",stackTraceFile=" + stackTraceFile);
     }
 
 
@@ -250,6 +251,7 @@ implements   MappingProcessor
                     // line. Also collect any additional output lines for this
                     // line.
                     int lineIndex = 0;
+                    int origLineNumber = -1;
 
                     outLine.setLength(0);
                     extraOutLines.clear();
@@ -280,8 +282,13 @@ implements   MappingProcessor
                                     break;
 
                                 case 'l':
-                                    lineNumber = Integer.parseInt(match);
-                                    outLine.append(match);
+                                    if (origLineNumber > 0) {
+                                        outLine.append(origLineNumber);
+                                    } else {
+                                        lineNumber = Integer.parseInt(match);
+                                        outLine.append(match);
+                                    }
+//                                    originalLineNumber(className, match, lineNumber, type, arguments, outLine);
                                     break;
 
                                 case 't':
@@ -298,7 +305,7 @@ implements   MappingProcessor
                                     break;
 
                                 case 'm':
-                                    originalMethodName(className,
+                                    origLineNumber = originalMethodName(className,
                                                        match,
                                                        lineNumber,
                                                        type,
@@ -323,22 +330,22 @@ implements   MappingProcessor
                     outLine.append(line.substring(lineIndex));
 
                     // Print out the processed line.
-//                    System.out.println(outLine);
-                    Logger.get().e(outLine.toString());
+                    System.out.println(outLine);
+//                    Logger.get().e(outLine.toString());
 
                     // Print out any additional lines.
                     for (int extraLineIndex = 0; extraLineIndex < extraOutLines.size(); extraLineIndex++)
                     {
-                        Logger.get().e(extraOutLines.get(extraLineIndex).toString());
-//                        System.out.println(extraOutLines.get(extraLineIndex));
+//                        Logger.get().e(extraOutLines.get(extraLineIndex).toString());
+                        System.out.println(extraOutLines.get(extraLineIndex));
                     }
                 }
                 else
                 {
                     // The line didn't match the regular expression.
                     // Print out the original line.
-//                    System.out.println(line);
-                    Logger.get().e(line);
+                    System.out.println(line);
+//                    Logger.get().e(line);
                 }
             }
         }
@@ -440,7 +447,7 @@ implements   MappingProcessor
      * Finds the original method name(s), appending the first one to the out
      * line, and any additional alternatives to the extra lines.
      */
-    private void originalMethodName(String       className,
+    private int originalMethodName(String       className,
                                     String       obfuscatedMethodName,
                                     int          lineNumber,
                                     String       type,
@@ -449,7 +456,7 @@ implements   MappingProcessor
                                     List         extraOutLines)
     {
         int extraIndent = -1;
-
+        int origLineNumber = -1;
         // Class name -> obfuscated method names.
         Map methodMap = (Map)classMethodMap.get(className);
         if (methodMap != null)
@@ -476,6 +483,9 @@ implements   MappingProcessor
                                 outLine.append(methodInfo.type).append(' ');
                             }
                             outLine.append(methodInfo.originalName);
+                            if (methodInfo.origFirstLineNumber > 0) {
+                                origLineNumber = methodInfo.getOrigLineNumber(lineNumber);
+                            }
                             if (verbose)
                             {
                                 outLine.append('(').append(methodInfo.arguments).append(')');
@@ -515,6 +525,38 @@ implements   MappingProcessor
         if (extraIndent < 0)
         {
             outLine.append(obfuscatedMethodName);
+        }
+        return origLineNumber;
+    }
+
+
+    private void originalLineNumber(String       className,
+                                    String       obfuscatedMethodName,
+                                    int          lineNumber,
+                                    String       type,
+                                    String       arguments,
+                                    StringBuffer outLine)
+    {
+        // Class name -> obfuscated method names.
+        Map methodMap = (Map)classMethodMap.get(className);
+        if (methodMap != null)
+        {
+            // Obfuscated method names -> methods.
+            Set methodSet = (Set)methodMap.get(obfuscatedMethodName);
+            if (methodSet != null)
+            {
+                // Find all matching methods.
+                Iterator methodInfoIterator = methodSet.iterator();
+                while (methodInfoIterator.hasNext())
+                {
+                    MethodInfo methodInfo = (MethodInfo)methodInfoIterator.next();
+                    if (methodInfo.matches(lineNumber, type, arguments))
+                    {
+                        // Is this the first matching method?
+                        outLine.append(methodInfo.origFirstLineNumber);
+                    }
+                }
+            }
         }
     }
 
@@ -633,6 +675,33 @@ implements   MappingProcessor
                                      methodName));
     }
 
+    @Override
+    public void processMethodMapping(String className, int firstLineNumber, int lastLineNumber, String methodReturnType, String methodName, String methodArguments, int origFirstLineNumber, int origLastLineNumber, String newMethodName) {
+        // Original class name -> obfuscated method names.
+        Map methodMap = (Map)classMethodMap.get(className);
+        if (methodMap == null)
+        {
+            methodMap = new HashMap();
+            classMethodMap.put(className, methodMap);
+        }
+
+        // Obfuscated method name -> methods.
+        Set methodSet = (Set)methodMap.get(newMethodName);
+        if (methodSet == null)
+        {
+            methodSet = new LinkedHashSet();
+            methodMap.put(newMethodName, methodSet);
+        }
+
+        // Add the method information.
+        methodSet.add(new MethodInfo(firstLineNumber,
+                lastLineNumber,
+                methodReturnType,
+                methodArguments,
+                methodName,
+                origFirstLineNumber,
+                origLastLineNumber));
+    }
 
     /**
      * A field record.
@@ -668,6 +737,8 @@ implements   MappingProcessor
         private String type;
         private String arguments;
         private String originalName;
+        private int    origFirstLineNumber;
+        private int    origLastLineNumber;
 
 
         private MethodInfo(int firstLineNumber, int lastLineNumber, String type, String arguments, String originalName)
@@ -679,6 +750,16 @@ implements   MappingProcessor
             this.originalName    = originalName;
         }
 
+        private MethodInfo(int firstLineNumber, int lastLineNumber, String type, String arguments, String originalName, int origFirstLineNumber, int origLastLineNumber)
+        {
+            this.firstLineNumber = firstLineNumber;
+            this.lastLineNumber = lastLineNumber;
+            this.type = type;
+            this.arguments = arguments;
+            this.originalName = originalName;
+            this.origFirstLineNumber = origFirstLineNumber;
+            this.origLastLineNumber = origLastLineNumber;
+        }
 
         private boolean matches(int lineNumber, String type, String arguments)
         {
@@ -686,6 +767,18 @@ implements   MappingProcessor
                 (lineNumber == 0    || (firstLineNumber <= lineNumber && lineNumber <= lastLineNumber) || lastLineNumber == 0) &&
                 (type       == null || type.equals(this.type))                                                                 &&
                 (arguments  == null || arguments.equals(this.arguments));
+        }
+
+        private int getOrigLineNumber(int lineNumber) {
+            if (lineNumber >= firstLineNumber && lineNumber <= lastLineNumber) {
+                if (origLastLineNumber - origFirstLineNumber == lastLineNumber - firstLineNumber) {
+                    return lineNumber - firstLineNumber + origFirstLineNumber;
+                } else {
+                    return (int) ((lineNumber - firstLineNumber) * 1.0 / (lastLineNumber - firstLineNumber) * (origLastLineNumber - origFirstLineNumber));
+                }
+            } else {
+                return lineNumber;
+            }
         }
     }
 

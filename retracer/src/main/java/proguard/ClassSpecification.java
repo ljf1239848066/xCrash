@@ -30,6 +30,7 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
+@SuppressWarnings("unchecked")
 public class ClassSpecification implements Cloneable
 {
     public final String comments;

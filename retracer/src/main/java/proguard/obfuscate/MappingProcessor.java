@@ -76,4 +76,31 @@ public interface MappingProcessor
                                      String methodName,
                                      String methodArguments,
                                      String newMethodName);
+
+    /**
+     * Processes the given method name mapping.
+     *
+     * @param className           the original class name.
+     * @param firstLineNumber     the first line number of the method, or 0 if it
+     *                            is not known.
+     * @param lastLineNumber      the last line number of the method, or 0 if it
+     *                            is not known.
+     * @param methodReturnType    the original external method return type.
+     * @param methodName          the original external method name.
+     * @param methodArguments     the original external method arguments.
+     * @param origFirstLineNumber the original first line number of the method, or
+     *                            0 if it is not know
+     * @param origLastLineNumber  the original last line number of the method, or
+     *                            0 if it is not know
+     * @param newMethodName       the new method name.
+     */
+    public void processMethodMapping(String className,
+                                     int    firstLineNumber,
+                                     int    lastLineNumber,
+                                     String methodReturnType,
+                                     String methodName,
+                                     String methodArguments,
+                                     int origFirstLineNumber,
+                                     int origLastLineNumber,
+                                     String newMethodName);
 }

@@ -150,6 +150,8 @@ public class MappingReader
         int spaceIndex     =                           line.indexOf(' ', colonIndex2    + 2);
         int argumentIndex1 =                           line.indexOf('(', spaceIndex     + 1);
         int argumentIndex2 = argumentIndex1 < 0 ? -1 : line.indexOf(')', argumentIndex1 + 1);
+        int colonIndex3    = argumentIndex1 < 0 ? -1 : line.indexOf(':', argumentIndex1 + 1);
+        int colonIndex4    = colonIndex3 < 0 ? -1 :    line.indexOf(':', colonIndex3    + 1);
         int arrowIndex     =                           line.indexOf("->", Math.max(spaceIndex, argumentIndex2) + 1);
 
         if (spaceIndex < 0 ||
@@ -177,6 +179,8 @@ public class MappingReader
             {
                 int firstLineNumber = 0;
                 int lastLineNumber  = 0;
+                int origFirstLineNumber = 0;
+                int origLastLineNumber  = 0;
 
                 if (colonIndex2 > 0)
                 {
@@ -184,15 +188,33 @@ public class MappingReader
                     lastLineNumber  = Integer.parseInt(line.substring(colonIndex1 + 1, colonIndex2).trim());
                 }
 
+                // parse original line number
+                if(colonIndex3 > 0) {
+                    origFirstLineNumber = Integer.parseInt(line.substring(colonIndex3 + 1, colonIndex4).trim());
+                    origLastLineNumber = Integer.parseInt(line.substring(colonIndex4 + 1, arrowIndex).trim());
+                }
+
                 String arguments = line.substring(argumentIndex1 + 1, argumentIndex2).trim();
 
-                mappingProcessor.processMethodMapping(className,
-                                                      firstLineNumber,
-                                                      lastLineNumber,
-                                                      type,
-                                                      name,
-                                                      arguments,
-                                                      newName);
+                if(colonIndex3>0) {
+                    mappingProcessor.processMethodMapping(className,
+                            firstLineNumber,
+                            lastLineNumber,
+                            type,
+                            name,
+                            arguments,
+                            origFirstLineNumber,
+                            origLastLineNumber,
+                            newName);
+                } else {
+                    mappingProcessor.processMethodMapping(className,
+                            firstLineNumber,
+                            lastLineNumber,
+                            type,
+                            name,
+                            arguments,
+                            newName);
+                }
             }
         }
     }

@@ -25,6 +25,7 @@ import proguard.classfile.util.ClassUtil;
 import proguard.obfuscate.MappingProcessor;
 import proguard.obfuscate.MappingReader;
 
+@SuppressWarnings("unchecked")
 public class ReTrace implements MappingProcessor {
     private static final String REGEX_OPTION = "-regex";
 
@@ -337,6 +338,34 @@ public class ReTrace implements MappingProcessor {
         set.add(new MethodInfo(paramInt1, paramInt2, paramString2, paramString4, paramString3));
     }
 
+    @Override
+    public void processMethodMapping(String className, int firstLineNumber, int lastLineNumber, String methodReturnType, String methodName, String methodArguments, int origFirstLineNumber, int origLastLineNumber, String newMethodName) {
+        // Original class name -> obfuscated method names.
+        Map methodMap = (Map)classMethodMap.get(className);
+        if (methodMap == null)
+        {
+            methodMap = new HashMap();
+            classMethodMap.put(className, methodMap);
+        }
+
+        // Obfuscated method name -> methods.
+        Set methodSet = (Set)methodMap.get(newMethodName);
+        if (methodSet == null)
+        {
+            methodSet = new LinkedHashSet();
+            methodMap.put(newMethodName, methodSet);
+        }
+
+        // Add the method information.
+        methodSet.add(new MethodInfo(firstLineNumber,
+                lastLineNumber,
+                methodReturnType,
+                methodArguments,
+                methodName,
+                origFirstLineNumber,
+                origLastLineNumber));
+    }
+
     private static class FieldInfo {
         private String type;
 
@@ -361,12 +390,26 @@ public class ReTrace implements MappingProcessor {
 
         private String originalName;
 
+        private int    origFirstLineNumber;
+
+        private int    origLastLineNumber;
+
         private MethodInfo(int param1Int1, int param1Int2, String param1String1, String param1String2, String param1String3) {
             this.firstLineNumber = param1Int1;
             this.lastLineNumber = param1Int2;
             this.type = param1String1;
             this.arguments = param1String2;
             this.originalName = param1String3;
+        }
+
+        private MethodInfo(int firstLineNumber, int lastLineNumber, String type, String arguments, String originalName, int origFirstLineNumber, int origLastLineNumber) {
+            this.firstLineNumber = firstLineNumber;
+            this.lastLineNumber = lastLineNumber;
+            this.type = type;
+            this.arguments = arguments;
+            this.originalName = originalName;
+            this.origFirstLineNumber = origFirstLineNumber;
+            this.origLastLineNumber = origLastLineNumber;
         }
 
         private boolean matches(int param1Int, String param1String1, String param1String2) { return ((param1Int == 0 || (this.firstLineNumber <= param1Int && param1Int <= this.lastLineNumber) || this.lastLineNumber == 0) && (param1String1 == null || param1String1.equals(this.type)) && (param1String2 == null || param1String2.equals(this.arguments))); }

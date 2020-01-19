@@ -32,6 +32,7 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
+@SuppressWarnings("unchecked")
 public class ClassMemberSorter implements ClassVisitor, Comparator
 {
     // Implementations for ClassVisitor.

@@ -93,4 +93,28 @@ public class MultiMappingProcessor implements MappingProcessor
                                                           newMethodName);
         }
     }
+
+    @Override
+    public void processMethodMapping(String className,
+                                     int firstLineNumber,
+                                     int lastLineNumber,
+                                     String methodReturnType,
+                                     String methodName,
+                                     String methodArguments,
+                                     int origFirstLineNumber,
+                                     int origLastLineNumber,
+                                     String newMethodName) {
+        for (int index = 0; index < mappingProcessors.length; index++)
+        {
+            mappingProcessors[index].processMethodMapping(className,
+                    firstLineNumber,
+                    lastLineNumber,
+                    methodReturnType,
+                    methodName,
+                    methodArguments,
+                    origFirstLineNumber,
+                    origLastLineNumber,
+                    newMethodName);
+        }
+    }
 }

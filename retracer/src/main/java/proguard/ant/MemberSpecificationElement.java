@@ -34,6 +34,7 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
+@SuppressWarnings("unchecked")
 public class MemberSpecificationElement extends DataType
 {
     private String access;

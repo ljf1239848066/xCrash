@@ -33,6 +33,7 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
+@SuppressWarnings("unchecked")
 public class ClassSpecificationElement extends DataType
 {
     private static final String ANY_CLASS_KEYWORD  = "*";
