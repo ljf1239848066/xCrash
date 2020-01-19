@@ -34,7 +34,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class MethodLinker
 extends      SimplifiedVisitor
 implements   ClassVisitor,

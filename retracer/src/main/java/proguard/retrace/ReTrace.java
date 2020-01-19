@@ -37,7 +37,6 @@ import java.util.regex.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ReTrace
 implements   MappingProcessor
 {

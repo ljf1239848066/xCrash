@@ -34,7 +34,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class AttributeSorter
 extends      SimplifiedVisitor
 implements   ClassVisitor, MemberVisitor, AttributeVisitor, Comparator

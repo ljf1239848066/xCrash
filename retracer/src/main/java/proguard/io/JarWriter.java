@@ -33,7 +33,6 @@ import java.util.zip.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class JarWriter implements DataEntryWriter, Finisher
 {
     private final DataEntryWriter dataEntryWriter;

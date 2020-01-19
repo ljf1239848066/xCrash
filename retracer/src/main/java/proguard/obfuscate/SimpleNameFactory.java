@@ -29,7 +29,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class SimpleNameFactory implements NameFactory
 {
     private static final int CHARACTER_COUNT = 26;

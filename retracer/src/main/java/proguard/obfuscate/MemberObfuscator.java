@@ -37,7 +37,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class MemberObfuscator
 extends      SimplifiedVisitor
 implements   MemberVisitor

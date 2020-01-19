@@ -42,7 +42,6 @@ import java.util.*;
  * @see SideEffectMethodMarker
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class SideEffectInstructionChecker
 extends      SimplifiedVisitor
 implements   InstructionVisitor,

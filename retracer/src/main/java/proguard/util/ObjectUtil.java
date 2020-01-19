@@ -24,7 +24,6 @@ package proguard.util;
 /**
  * This class contains utility methods operating on objects.
  */
-@SuppressWarnings("unchecked")
 public class ObjectUtil
 {
     /**

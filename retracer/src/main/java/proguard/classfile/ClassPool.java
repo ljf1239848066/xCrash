@@ -30,7 +30,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ClassPool
 {
     // We're using a sorted tree map instead of a hash map to store the classes,

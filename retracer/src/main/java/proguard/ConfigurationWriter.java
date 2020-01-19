@@ -33,7 +33,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ConfigurationWriter
 {
     private static final String[] KEEP_OPTIONS = new String[]

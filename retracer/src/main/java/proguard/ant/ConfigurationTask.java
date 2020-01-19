@@ -31,7 +31,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ConfigurationTask extends Task
 {
     protected final Configuration configuration = new Configuration();

@@ -39,7 +39,6 @@ import java.util.Arrays;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class PartialEvaluator
 extends      SimplifiedVisitor
 implements   AttributeVisitor,

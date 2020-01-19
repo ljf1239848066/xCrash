@@ -25,7 +25,6 @@ import proguard.classfile.util.ClassUtil;
 import proguard.obfuscate.MappingProcessor;
 import proguard.obfuscate.MappingReader;
 
-@SuppressWarnings("unchecked")
 public class ReTrace implements MappingProcessor {
     private static final String REGEX_OPTION = "-regex";
 

@@ -30,7 +30,6 @@ import java.util.Stack;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class DescriptorClassEnumeration
 {
     private String  descriptor;

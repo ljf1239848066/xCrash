@@ -30,7 +30,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class DictionaryNameFactory implements NameFactory
 {
     private static final char COMMENT_CHARACTER = '#';

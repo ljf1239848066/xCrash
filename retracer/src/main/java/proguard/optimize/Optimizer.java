@@ -43,7 +43,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class Optimizer
 {
     private static final String CLASS_MARKING_FINAL            = "class/marking/final";

@@ -30,7 +30,6 @@ import java.util.Set;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ClassVersionSetter implements ClassVisitor
 {
     private final int classVersion;

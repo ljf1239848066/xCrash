@@ -31,7 +31,6 @@ import java.util.Set;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ClassCollector
 extends      SimplifiedVisitor
 implements   ClassVisitor

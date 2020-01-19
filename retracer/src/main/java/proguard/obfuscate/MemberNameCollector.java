@@ -34,7 +34,6 @@ import java.util.Map;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class MemberNameCollector
 extends      SimplifiedVisitor
 implements   MemberVisitor

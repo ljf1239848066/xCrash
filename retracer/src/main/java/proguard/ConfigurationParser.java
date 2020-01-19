@@ -36,7 +36,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class ConfigurationParser
 {
     private final WordReader reader;

@@ -34,7 +34,6 @@ import java.util.*;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class TypedReferenceValue extends ReferenceValue
 {
     private static final boolean DEBUG = false;

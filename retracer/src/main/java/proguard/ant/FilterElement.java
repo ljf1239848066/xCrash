@@ -31,7 +31,6 @@ import java.util.List;
  *
  * @author Eric Lafortune
  */
-@SuppressWarnings("unchecked")
 public class FilterElement extends DataType
 {
     private String filter;
